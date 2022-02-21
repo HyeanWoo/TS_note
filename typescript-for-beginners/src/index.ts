@@ -1,19 +1,21 @@
-interface Human {
-  name:string;
-  eye:number;
-  nose:string;
+class Human {
+  public name:string;
+  public age:number;
+  public gender:string;
+
+  constructor(name, age, gender) {
+    this.name = name;
+    this.age = age;
+    this.gender = gender;
+  }
 }
 
-const person = {
-  name: "atom",
-  eye: 33,
-  nose: "false"
-}
+const lynn = new Human('lynn', 18, 'female');
 
 const sayHi = (person:Human):string => {
-  return `Hello ${person.name}! You have ${person.eye} eyes, and ${person.nose} nose`;
+  return `Hello ${person.name}! You are ${person.age} olds, and you are ${person.gender}`;
 }
 
-console.log(sayHi(person));
+console.log(sayHi(lynn));
 
 export {};
