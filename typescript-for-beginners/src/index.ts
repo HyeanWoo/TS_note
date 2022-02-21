@@ -14,6 +14,13 @@ class Block {
     data: string
   ): string => CryptoJS.SHA256(index + previousHash + timestamp + data).toString();
 
+  static validateStructure = (aBlock: Block): boolean =>
+    typeof aBlock.index === "number" &&
+    typeof aBlock.hash === "string" &&
+    typeof aBlock.previousHash === "string" &&
+    typeof aBlock.data === "string" &&
+    typeof aBlock.timestamp === "number";
+
   constructor(
     index: number, 
     hash: string, 
@@ -29,7 +36,7 @@ class Block {
   }
 }
 
-const genesisBlock: Block = new Block(0, "22020200020", "", "Hello", 123456);
+const genesisBlock: Block = new Block(0, "22020200020", "", "first block", 123456);
 
 let blockchain: Block[] = [genesisBlock];
 
@@ -39,6 +46,56 @@ const getLatestBlock = (): Block => blockchain[blockchain.length - 1];
 
 const getNewTimestamp = (): number => Math.round(new Date().getTime() / 1000);
 
-console.log(blockchain);
+const getHashForBlock = (aBlock: Block): string =>
+  Block.calculateBlockHash(
+    aBlock.index,
+    aBlock.previousHash,
+    aBlock.timestamp,
+    aBlock.data
+  );
+
+const isBlockValid = (candidateBlock: Block, previousBlock: Block): boolean => {
+  if (!Block.validateStructure(candidateBlock)) {
+    return false;
+  } else if (previousBlock.index + 1 !== candidateBlock.index) {
+    return false;
+  } else if (previousBlock.hash !== candidateBlock.previousHash) {
+    return false;
+  } else if (getHashForBlock(candidateBlock) !== candidateBlock.hash) {
+    return false;
+  } else {
+    return true;;
+  }
+};
+
+const addBlock = (candidateBlock: Block): void => {
+  if (isBlockValid(candidateBlock, getLatestBlock())) {
+    blockchain.push(candidateBlock);
+  }
+};
+
+const createNewBlock = (data: string): Block => {
+  const previousBlock: Block = getLatestBlock();
+  const newIndex: number = previousBlock.index + 1;
+  const newTimestamp: number = getNewTimestamp();
+  const newHash: string = Block.calculateBlockHash(
+    newIndex,
+    previousBlock.hash,
+    newTimestamp,
+    data
+  );
+  
+  const newBlock = new Block(newIndex, newHash, previousBlock.hash, data, newTimestamp);
+  
+  addBlock(newBlock);
+
+  return newBlock;
+}
+
+createNewBlock("second");
+createNewBlock("third");
+createNewBlock("fourth");
+
+console.log(getBlockchain());
 
 export {};
