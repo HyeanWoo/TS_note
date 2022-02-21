@@ -1,0 +1,14 @@
+{
+  "name": "typescript-for-beginners",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/HyeanWoo/TS_note",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.5.5"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "prestart": "tsc"
+  }
+}
